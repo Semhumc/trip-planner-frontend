@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Go backend API'nizin ana URL'sini .env dosyasından almak en iyi pratiktir.
 // Örn: REACT_APP_API_URL=http://localhost:8081/api
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const API_URL = 'http://localhost:5000/api';
 
 // Özellikle API istekleri için yapılandırılmış bir axios istemcisi oluşturalım.
 // Bu, authService'deki istemciden farklı olabilir veya aynı temel yapılandırmayı paylaşabilir.
