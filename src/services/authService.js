@@ -1,4 +1,4 @@
-// src/services/authService.js - DOĞRU HALİ
+// src/services/authService.js - FIXED VERSION
 import axios from 'axios';
 
 const AUTH_API_URL = 'http://localhost:5000/api/v1';
@@ -8,11 +8,14 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+/**
+ * Kullanıcı giriş yapmak için backend'e POST isteği gönderir.
+ * @param {object} credentials - { email: string, password: string }
+ * @returns {Promise} Axios'tan dönen promise.
+ */
 export const login = (credentials) => {
   return apiClient.post('/login', credentials);
 };
-
-
 
 /**
  * Yeni kullanıcı bilgilerini backend'e göndererek kayıt oluşturur.
@@ -20,15 +23,23 @@ export const login = (credentials) => {
  * @returns {Promise} Axios'tan dönen promise.
  */
 export const register = (userData) => {
-  return apiClient.post('/register', userData);
+  // Frontend'den gelen veriyi backend'in beklediği formata dönüştür
+  const registerData = {
+    firstname: userData.firstName,
+    lastname: userData.lastName,
+    username: userData.email, // Username olarak email kullanıyoruz
+    email: userData.email,
+    password: userData.password
+  };
+  
+  return apiClient.post('/register', registerData);
 };
 
 /**
  * Backend'deki session'ı sonlandırmak için istek atar.
- * Başarılı olursa backend kullanıcıyı logout sayfasına yönlendirir.
  */
 export const logout = () => {
-  window.location.href = `${AUTH_API_URL}/logout`;
+  return apiClient.post('/logout');
 };
 
 /**
