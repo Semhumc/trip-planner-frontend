@@ -1,0 +1,61 @@
+/* src/styles/_variables.css */
+
+:root {
+    /* ------------------------- */
+    /* --- Renk Paleti (Doğa ve Sakinlik Temalı) --- */
+    /* ------------------------- */
+    --primary-color: #5c8d89;          /* Ana Renk: Sakin bir yeşil-mavi tonu */
+    --primary-color-dark: #4a6d7c;      /* Ana Rengin Koyu Tonu (Buton hover vb. için) */
+    --secondary-color: #f0e5d8;      /* İkincil Renk: Yumuşak bej/krem */
+    --accent-color: #e89f71;           /* Vurgu Rengi: Sıcak bir turuncu/toprak tonu (opsiyonel) */
+  
+    --background-color: #fdfdfd;      /* Sayfa Arka Planı: Neredeyse beyaz, göz yormayan */
+    --surface-color: #ffffff;         /* Kart ve Form Arka Planları: Saf beyaz */
+  
+    --text-color: #3a3a3a;              /* Ana Metin Rengi: Saf siyahtan daha yumuşak */
+    --text-color-light: #6c757d;      /* İkincil Metin Rengi: Daha açık gri */
+  
+    --border-color: #e0e0e0;           /* Kenarlık Rengi */
+  
+    --success-color: #2e7d32;           /* Başarı Mesajı Rengi */
+    --error-color: #d32f2f;             /* Hata Mesajı Rengi */
+  
+  
+    /* ------------------------- */
+    /* --- Tipografi --- */
+    /* ------------------------- */
+    --font-family-heading: 'Nunito', 'Helvetica', 'Arial', sans-serif; /* Başlıklar için daha yuvarlak, soft bir font */
+    --font-family-body: 'Lato', 'Helvetica', 'Arial', sans-serif;     /* Gövde metinleri için okunaklı bir font */
+  
+    --font-size-base: 16px; /* 1rem'in temel değeri */
+    --line-height-base: 1.6;
+  
+  
+    /* ------------------------- */
+    /* --- Boşluklar (Spacing) --- */
+    /* ------------------------- */
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem;  /* 8px */
+    --spacing-md: 1rem;    /* 16px */
+    --spacing-lg: 1.5rem;  /* 24px */
+    --spacing-xl: 2rem;    /* 32px */
+    --spacing-xxl: 3rem;   /* 48px */
+  
+  
+    /* ------------------------- */
+    /* --- Kenarlıklar ve Gölgeler --- */
+    /* ------------------------- */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  
+    --box-shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --box-shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  
+    /* ------------------------- */
+    /* --- Layout --- */
+    /* ------------------------- */
+    --container-width: 1200px; /* Ana içeriğin maksimum genişliği */
+    --header-height: 70px;     /* Navbar'ın yüksekliği */
+  }

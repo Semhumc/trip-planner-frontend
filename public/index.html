@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Tarayıcı sekmesinde görünecek olan ikon (favicon) -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <!-- Mobil cihazlarda ve responsive tasarım için kritik meta etiketi -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Mobil tarayıcılarda adres çubuğunun rengini belirler (isteğe bağlı) -->
+    <meta name="theme-color" content="#5c8d89" />
+
+    <!-- Arama motorları (SEO) için sayfa açıklaması -->
+    <meta
+      name="description"
+      content="Hayalinizdeki kamp ve doğa gezilerini kolayca planlayın. Rotalar oluşturun, maceralarınızı keşfedin."
+    />
+
+    <!-- Apple cihazlarda ana ekrana eklendiğinde görünecek ikon -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+    <!-- Progressive Web App (PWA) manifest dosyası -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!--
+      ÖNERİ: Projenin estetiği için Google Fonts'tan font ekleyebilirsiniz.
+      Örneğin, "Nunito" ve "Lato" gibi soft fontlar:
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+    <!-- Tarayıcı sekmesinde görünecek olan başlık -->
+    <title>Trip Planner | Kamp ve Gezi Planlayıcı</title>
+  </head>
+  <body>
+    <!--
+      Kullanıcı tarayıcısında JavaScript kapalıysa bu mesaj gösterilir.
+      React bir JavaScript kütüphanesi olduğu için çalışmaz.
+    -->
+    <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
+
+    <!--
+      BU EN ÖNEMLİ KISIMDIR!
+      Tüm React uygulamanız, `src/index.js` dosyası tarafından bu div'in içine render edilir.
+      Bu div'i silmeyin.
+    -->
+    <div id="root"></div>
+
+  </body>
+</html>
