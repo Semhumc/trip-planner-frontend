@@ -1,4 +1,3 @@
-// src/pages/RegisterPage.js
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../services/authService';
@@ -9,6 +8,7 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    username: '', // Username alanı eklendi
     email: '',
     password: '',
   });
@@ -27,10 +27,10 @@ const RegisterPage = () => {
     setSuccess('');
 
     try {
-      const response = await register(formData); // 🔁 Backend’e istek gönder
+      const response = await register(formData); // Backend'e istek gönder
       setSuccess('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
       setTimeout(() => {
-        navigate('/login'); // 🧭 Başarılıysa giriş sayfasına yönlendir
+        navigate('/login'); // Başarılıysa giriş sayfasına yönlendir
       }, 2000);
     } catch (err) {
       console.error('Kayıt Hatası:', err);
@@ -53,6 +53,9 @@ const RegisterPage = () => {
           </div>
           <div style={styles.inputGroup}>
             <Input id="lastName" name="lastName" label="Soyad" value={formData.lastName} onChange={handleChange} required />
+          </div>
+          <div style={styles.inputGroup}>
+            <Input id="username" name="username" label="Kullanıcı Adı" value={formData.username} onChange={handleChange} required />
           </div>
           <div style={styles.inputGroup}>
             <Input id="email" name="email" label="E-posta" type="email" value={formData.email} onChange={handleChange} required />

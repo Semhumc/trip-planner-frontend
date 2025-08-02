@@ -1,12 +1,19 @@
-// src/pages/HomePage.js
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/button';
-//import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-    // Giriş ve kayıt fonksiyonlarını context'ten alıyoruz.
-    const { login, register } = useAuth();
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate('/login');
+    };
+
+    const handleRegister = () => {
+        navigate('/register');
+    };
 
     return (
         <div style={styles.pageContainer}>
@@ -16,8 +23,14 @@ const HomePage = () => {
                     Kamp ve doğa gezilerinizi tek bir yerden kolayca organize edin, yeni rotalar keşfedin ve anılarınızı biriktirin.
                 </p>
                 <div style={styles.heroButtons}>
-                    <Button onClick={register} variant="primary">Maceraya Başla</Button>
-                    <Button onClick={login} variant="secondary">Giriş Yap</Button>
+                    {!isAuthenticated ? (
+                        <>
+                            <Button onClick={handleRegister} variant="primary">Maceraya Başla</Button>
+                            <Button onClick={handleLogin} variant="secondary">Giriş Yap</Button>
+                        </>
+                    ) : (
+                        <Button onClick={() => navigate('/dashboard')} variant="primary">Dashboard'a Git</Button>
+                    )}
                 </div>
             </header>
 
@@ -42,13 +55,12 @@ const HomePage = () => {
     );
 };
 
-// Stil Tanımlamaları
 const styles = {
     pageContainer: { fontFamily: "'Nunito', sans-serif" },
     heroSection: {
         textAlign: 'center',
         padding: '5rem 2rem',
-        backgroundColor: '#f0e5d8', // Soft bej rengi
+        backgroundColor: '#f0e5d8',
         color: '#3a3a3a',
     },
     heroTitle: { fontSize: '3rem', margin: '0 0 1rem 0' },

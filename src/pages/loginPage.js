@@ -1,4 +1,3 @@
-// src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -7,7 +6,7 @@ import Input from '../components/common/input';
 import Button from '../components/common/button';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState(''); // email yerine username
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,14 +19,14 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      await login({ email, password });
+      await login({ username, password }); // username ile login
       // Giriş başarılı. AuthContext'in kendini yenilemesi için refreshUser'ı çağır.
       await auth.refreshUser();
       // Kullanıcıyı dashboard'a yönlendir.
       navigate('/dashboard');
     } catch (err) {
       console.error("Giriş hatası:", err);
-      setError(err.response?.data?.message || 'E-posta veya şifre hatalı.');
+      setError(err.response?.data?.message || 'Kullanıcı adı veya şifre hatalı.');
       setIsLoading(false);
     }
   };
@@ -41,11 +40,11 @@ const LoginPage = () => {
           {error && <p style={styles.errorMessage}>{error}</p>}
           <div style={styles.inputGroup}>
             <Input
-              id="email"
-              label="E-posta Adresi"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              label="Kullanıcı Adı"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>

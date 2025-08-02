@@ -1,4 +1,4 @@
-// src/App.js
+// src/App.js - UPDATED WITH USER MANAGEMENT
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -14,21 +14,22 @@ import DashboardPage from './pages/dashboardPage';
 import MyTripsPage from './pages/myTripsPage';
 import ProfilePage from './pages/profilePage';
 
+// Yeni User Management Sayfaları
+//import UserManagementTestPage from './pages/userManagementTestPage';
+
+// Admin Bileşenleri
+//import UserManagement from './components/admin/userManagement';
+
 // Özel Rota Koruma Bileşeni
 import PrivateRoute from './components/common/PrivateRoute';
 
 function App() {
   return (
-    // Router, uygulamanızda URL bazlı gezinmeyi mümkün kılar.
     <Router>
-      {/* Bu div, footer'ı her zaman sayfanın en altına itmeye yardımcı olur. */}
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Navbar, Routes dışında olduğu için tüm sayfalarda görünür. */}
         <Navbar />
 
-        {/* main elementi, sayfa içeriğini sarar ve esnek büyüme sağlar. */}
         <main style={{ flex: '1 0 auto' }}>
-          {/* Routes, mevcut URL'ye göre hangi Route'un render edileceğini belirler. */}
           <Routes>
             {/* Herkesin Erişebileceği Rotalar */}
             <Route path="/" element={<HomePage />} />
@@ -36,7 +37,6 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Sadece Giriş Yapmış Kullanıcıların Erişebileceği Rotalar */}
-            {/* Bu rotalar, PrivateRoute bileşeni ile sarmalanmıştır. */}
             <Route
               path="/dashboard"
               element={
@@ -62,12 +62,36 @@ function App() {
               }
             />
 
-            {/* Eşleşmeyen tüm yollar için bir 404 sayfası eklenebilir. */}
-            {/* <Route path="*" element={<NotFoundPage />} /> */}
+            {/* User Management Test Sayfası */}
+            {/*<Route
+              path="/user-management-test"
+              element={
+                <PrivateRoute>
+                  <UserManagementTestPage />
+                </PrivateRoute>
+              }
+            />*/} 
+
+            {/* Admin Sayfaları */}
+            {/*<Route
+              path="/admin/users"
+              element={
+                <PrivateRoute>
+                  <UserManagement />
+                </PrivateRoute>
+              }
+            />*/}
+
+            {/* 404 sayfası için */}
+            <Route path="*" element={
+              <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                <h2>Sayfa Bulunamadı</h2>
+                <p>Aradığınız sayfa mevcut değil.</p>
+              </div>
+            } />
           </Routes>
         </main>
 
-        {/* Footer, Routes dışında olduğu için tüm sayfalarda görünür. */}
         <Footer />
       </div>
     </Router>

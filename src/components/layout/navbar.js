@@ -1,53 +1,50 @@
-// src/components/layout/Navbar.js
+// src/components/layout/navbar.js - UPDATED
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import Button from '../common/button'; // Özel Button bileşenimizi kullanıyoruz
+import Button from '../common/button';
 import { useNavigate } from 'react-router-dom';
 
-
 const Navbar = () => {
-    // AuthContext'ten gerekli bilgileri ve fonksiyonları alıyoruz
     const { isAuthenticated, logout } = useAuth();
-
     const navigate = useNavigate();
 
-    // Giriş yapma fonksiyonu Auth servisindeki yönlendirmeyi tetikler.
-    // Direkt login fonksiyonunu AuthContext'ten de alabilirdik, bu bir alternatif.
     const handleLogin = () => {
-        // Go Auth servisinizin login endpoint'ine yönlendirme
         navigate('/login');
     };
 
     const handleRegisterClick = () => {
         navigate('/register');
-      };
+    };
 
+
+
+    const handleLogout = () => {
+        navigate('/logout');
+    };
     return (
         <header style={styles.header}>
             <nav style={styles.nav}>
-                {/* Logo veya Site Adı */}
                 <Link to="/" style={styles.logo}>
                     Trip Planner
                 </Link>
 
-                {/* Ana Menü Linkleri */}
                 <div style={styles.menuLinks}>
-                    {/* NavLink, aktif sayfa linkini stilize etmeyi kolaylaştırır */}
                     <NavLink to="/" style={({isActive}) => (isActive ? styles.activeLink : styles.link)}>Ana Sayfa</NavLink>
-                    {/* Kullanıcı giriş yapmışsa Gezilerim sayfasını göster */}
                     {isAuthenticated && (
-                        <NavLink to="/my-trips" style={({isActive}) => (isActive ? styles.activeLink : styles.link)}>Gezilerim</NavLink>
+                        <>
+                            <NavLink to="/my-trips" style={({isActive}) => (isActive ? styles.activeLink : styles.link)}>Gezilerim</NavLink>
+                            {/*<NavLink to="/user-management-test" style={({isActive}) => (isActive ? styles.activeLink : styles.link)}>API Test</NavLink>*/}
+                        </>
                     )}
                     <NavLink to="/contact" style={({isActive}) => (isActive ? styles.activeLink : styles.link)}>İletişim</NavLink>
                 </div>
 
-                {/* Sağ Taraftaki Butonlar */}
                 <div style={styles.authButtons}>
                     {isAuthenticated ? (
                         <>
                             <Link to="/profile" style={styles.profileLink}>Profilim</Link>
-                            <Button onClick={logout} variant="secondary">
+                            <Button onClick={handleLogout} variant="secondary">
                                 Çıkış Yap
                             </Button>
                         </>
@@ -56,8 +53,6 @@ const Navbar = () => {
                             <Button onClick={handleLogin} variant="secondary">
                                 Giriş Yap
                             </Button>
-                            
-
                             <Button onClick={handleRegisterClick} variant="primary">
                                  Kayıt Ol
                             </Button>
@@ -69,7 +64,6 @@ const Navbar = () => {
     );
 };
 
-// Stil Tanımlamaları
 const styles = {
     header: {
         backgroundColor: '#ffffff',
@@ -106,9 +100,9 @@ const styles = {
         borderBottom: '2px solid transparent',
         transition: 'color 0.2s, border-color 0.2s',
     },
-    activeLink: { // NavLink aktif olduğunda bu stil uygulanacak
+    activeLink: {
         textDecoration: 'none',
-        color: '#5c8d89', // Ana renk
+        color: '#5c8d89',
         fontWeight: '600',
         padding: '0.5rem 0',
         borderBottom: '2px solid #5c8d89',
