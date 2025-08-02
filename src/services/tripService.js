@@ -1,56 +1,46 @@
+// src/services/tripService.js
 import axios from 'axios';
 
-// Go backend API'nizin ana URL'sini .env dosyasından almak en iyi pratiktir.
-// Örn: REACT_APP_API_URL=http://localhost:8081/api
-const API_URL = 'http://localhost:5000/api';
+const TRIP_API_URL = 'http://localhost:6000/api/v1/trip';
 
-// Özellikle API istekleri için yapılandırılmış bir axios istemcisi oluşturalım.
-// Bu, authService'deki istemciden farklı olabilir veya aynı temel yapılandırmayı paylaşabilir.
 const apiClient = axios.create({
-  baseURL: API_URL,
-  // EN ÖNEMLİ KISIM: Bu ayar, tarayıcının her istekte backend'den gelen
-  // session cookie'sini otomatik olarak göndermesini sağlar. Bu olmadan,
-  // backend sizin kim olduğunuzu bilemez.
+  baseURL: TRIP_API_URL,
   withCredentials: true,
 });
 
 /**
- * Yeni bir gezi planı oluşturmak için backend'e POST isteği gönderir.
- * @param {object} tripData - { destination: string, startDate: string, endDate: string } gibi gezi verilerini içerir.
- * @returns {Promise<Object>} Axios'tan dönen promise'i döndürür. Başarılı olursa, oluşturulan gezi verisini içerir.
+ * AI'dan alınan trip planını önizleme için backend'e gönderir
+ * @param {object} tripData - Trip verisi
+ * @returns {Promise<Object>}
  */
-export const createTrip = (tripData) => {
-  // apiClient, /trips endpoint'ine POST isteği atacak.
-  // Gönderilen tam URL: http://localhost:8081/api/trips
-  return apiClient.post('/trips', tripData);
+export const previewTrip = (tripData) => {
+  return apiClient.post('/preview', tripData);
 };
 
 /**
- * Giriş yapmış olan kullanıcının tüm gezilerini getirmek için GET isteği gönderir.
- * @returns {Promise<Array>} Gezileri içeren bir dizi ile sonuçlanan promise.
+ * Trip'i veritabanına kaydetmek için backend'e gönderir
+ * @param {object} tripWithLocations - Trip ve location verisi
+ * @returns {Promise<Object>}
+ */
+export const saveTrip = (tripWithLocations) => {
+  return apiClient.post('/save', tripWithLocations);
+};
+
+/**
+ * Kullanıcının tüm triplerini getirir
+ * @returns {Promise<Array>}
  */
 export const getMyTrips = () => {
-  return apiClient.get('/trips');
+  // Bu endpoint henüz trip-plan-service'de yok, eklenmesi gerekecek
+  return apiClient.get('/list');
 };
 
 /**
- * Belirli bir geziyi ID'sine göre silmek için DELETE isteği gönderir.
- * @param {string | number} tripId - Silinecek olan gezinin benzersiz ID'si.
+ * Belirli bir trip'i siler
+ * @param {string|number} tripId
  * @returns {Promise}
  */
 export const deleteTrip = (tripId) => {
-  // Örnek URL: http://localhost:8081/api/trips/123
-  return apiClient.delete(`/trips/${tripId}`);
+  // Bu endpoint henüz trip-plan-service'de yok, eklenmesi gerekecek
+  return apiClient.delete(`/${tripId}`);
 };
-
-/**
- * Mevcut bir geziyi güncellemek için PUT isteği gönderir. (Opsiyonel)
- * @param {string | number} tripId - Güncellenecek gezinin ID'si.
- * @param {object} tripData - Güncellenmiş gezi verileri.
- * @returns {Promise<Object>} Güncellenmiş gezi verisini içeren promise.
- */
-export const updateTrip = (tripId, tripData) => {
-  return apiClient.put(`/trips/${tripId}`, tripData);
-};
-
-// İhtiyaca göre getTripById gibi diğer fonksiyonları da buraya ekleyebilirsiniz.
