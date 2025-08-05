@@ -1,4 +1,7 @@
 // src/pages/DashboardPage.js
+// AÇIKLAMA: Bu versiyon, üst başlık alanını daha az dikey boşluk kullanacak
+// şekilde daraltır ve daha kompakt bir görünüm sunar.
+
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import TripPlannerForm from '../components/trip/TripPlannerForm';
@@ -23,14 +26,45 @@ const DashboardPage = () => {
   );
 };
 
+// --- YENİLENMİŞ Stiller ---
 const styles = {
-  container: { maxWidth: '800px', margin: '3rem auto', padding: '0 1rem' },
-  header: { textAlign: 'center', marginBottom: '3rem' },
-  title: { fontSize: '2.5rem', color: '#3a3a3a', fontFamily: "'Nunito', sans-serif" },
-  subtitle: { fontSize: '1.1rem', color: '#555' },
-  main: { /* Ek stil gerekirse */ },
-  linkContainer: { marginTop: '2rem', textAlign: 'center' },
-  link: { color: '#5c8d89', textDecoration: 'none', fontWeight: '600' },
+  container: {
+    width: '100%',
+  },
+  header: {
+    textAlign: 'center',
+    // DEĞİŞİKLİK: Üst ve alt boşlukları azaltarak başlık alanını daralttık.
+    // Önceki değer: padding: '3rem 1rem 4rem 1rem'
+    padding: '1.5rem 1rem 1.5rem 1rem',
+  },
+  title: {
+    // DEĞİŞİKLİK: Yazı tipini hafifçe küçülterek daha kompakt bir görünüm sağladık.
+    // Önceki değer: fontSize: '2.5rem'
+    fontSize: '2.3rem',
+    color: '#2c3e50',
+    fontFamily: "'Nunito', sans-serif"
+  },
+  subtitle: {
+    fontSize: '1.1rem',
+    color: '#555',
+    marginTop: '0.5rem'
+  },
+  main: {
+    // Bu alanın özel bir stile ihtiyacı yok.
+  },
+  linkContainer: {
+    padding: '3rem 0 4rem 0',
+    textAlign: 'center',
+    backgroundColor: '#eef2f5', 
+  },
+  link: {
+    color: '#5c8d89',
+    textDecoration: 'none',
+    fontWeight: '600',
+    fontSize: '1.1rem',
+    padding: '0.5rem 1rem',
+    borderRadius: '8px',
+  },
 };
 
 export default DashboardPage;

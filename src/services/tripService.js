@@ -1,7 +1,7 @@
 // src/services/tripService.js - AI işlemleri trip service üzerinden
 import axios from 'axios';
 
-const TRIP_API_URL = 'http://localhost:8000/api/v1/trip';
+const TRIP_API_URL = 'http://localhost:8085/api/v1/trip';
 
 const apiClient = axios.create({
   baseURL: TRIP_API_URL,
