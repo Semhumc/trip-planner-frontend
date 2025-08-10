@@ -28,7 +28,6 @@ const Select = ({ id, label, name, value, onChange, disabled, options }) => (
   </div>
 );
 
-// Yardımcı Bileşen: "Etiket: Değer" satırlarını oluşturur
 const DetailRow = ({ label, children }) => (
     <div style={styles.detailRow}>
       <span style={styles.detailLabel}>{label}</span>
@@ -36,9 +35,37 @@ const DetailRow = ({ label, children }) => (
     </div>
 );
 
-// YENİ: Tek bir tema kartı bileşeni
 const ThemeCard = ({ themeData, isSelected, onSelect, onSave, isSaving }) => {
+  const [showAllDays, setShowAllDays] = useState(false);
+  
   if (!themeData || !themeData.trip) return null;
+
+  const formatDate = (dateString, dayOffset = 0) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + dayOffset);
+    return date.toLocaleDateString('tr-TR', {
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit'
+    });
+  };
+
+  const getLocationAddress = (location) => {
+    if (location.address) return location.address;
+    if (location.coordinates) {
+      return `${location.coordinates.lat.toFixed(4)}, ${location.coordinates.lng.toFixed(4)}`;
+    }
+    return 'Adres bilgisi mevcut değil';
+  };
+  
+  // YENİ: Web sitesini almak için birleştirilmiş fonksiyon
+  const getLocationWebsite = (location) => {
+    if (location.website) return location.website;
+    if (location.web_site) return location.web_site;
+    return null;
+  };
+
+  const displayedDays = showAllDays ? themeData.daily_plan : themeData.daily_plan?.slice(0, 3);
 
   return (
     <div style={{
@@ -46,13 +73,11 @@ const ThemeCard = ({ themeData, isSelected, onSelect, onSave, isSaving }) => {
       borderColor: isSelected ? '#5c8d89' : '#e9ecef',
       backgroundColor: isSelected ? '#f8fffe' : '#fff'
     }}>
-      {/* Tema Başlığı */}
       <div style={styles.themeHeader}>
         <h3 style={styles.themeTitle}>{themeData.theme}</h3>
         <p style={styles.themeDescription}>{themeData.description}</p>
       </div>
 
-      {/* Plan Detayları */}
       <div style={styles.themePlanDetails}>
         <div style={styles.tripInfo}>
           <DetailRow label="Plan:">{themeData.trip.name}</DetailRow>
@@ -60,49 +85,132 @@ const ThemeCard = ({ themeData, isSelected, onSelect, onSave, isSaving }) => {
           <DetailRow label="Rota:">{themeData.trip.start_position} → {themeData.trip.end_position}</DetailRow>
         </div>
 
-        {/* Günlük Planlar Preview */}
-        <div style={styles.dailyPlansPreview}>
-          <h4 style={styles.dailyPlansTitle}>Günlük Plan ({themeData.daily_plan?.length || 0} konum)</h4>
-          <div style={styles.dailyPlansList}>
-            {themeData.daily_plan?.slice(0, 2).map((day, index) => {
+        <div style={styles.detailedDailyPlans}>
+          <div style={styles.dailyPlansHeader}>
+            <h4 style={styles.dailyPlansTitle}>
+              📅 Günlük Detaylı Plan ({themeData.daily_plan?.length || 0} gün)
+            </h4>
+            {themeData.daily_plan?.length > 3 && (
+              <button
+                style={styles.toggleButton}
+                onClick={() => setShowAllDays(!showAllDays)}
+              >
+                {showAllDays ? 'Daha Az Göster' : 'Tümünü Göster'}
+              </button>
+            )}
+          </div>
+
+          <div style={styles.daysContainer}>
+            {displayedDays?.map((day, index) => {
+              const dayNum = day.day || index + 1;
+              const dayDate = formatDate(themeData.trip.start_date, index);
               const campsite = day.name?.split(' - ')[0] || day.name || 'Kamp Alanı';
-              const startDate = new Date(themeData.trip.start_date);
-              startDate.setDate(startDate.getDate() + index);
-              const formattedDate = startDate.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' });
               
               return (
-                <div key={index} style={styles.dayPreview}>
-                  <span style={styles.dayNumber}>Gün {day.day || index + 1}</span>
-                  <span style={styles.dayLocation}>{campsite}</span>
-                  <span style={styles.dayDate}>{formattedDate}</span>
+                <div key={index} style={styles.detailedDayCard}>
+                  <div style={styles.dayCardHeader}>
+                    <div style={styles.dayNumberBadge}>Gün {dayNum}</div>
+                    <div style={styles.dayDateInfo}>{dayDate}</div>
+                  </div>
+
+                  <div style={styles.dayLocationSection}>
+                    <div style={styles.locationInfoGrid}>
+                      {/* GÜNCELLENDİ: Emoji eklendi */}
+                      <div style={styles.locationInfoRow}>
+                        <span style={styles.locationLabel}>🏕️ Kamp Alanı:</span>
+                        <span style={styles.locationValue}>{campsite}</span>
+                      </div>
+                      <div style={styles.locationInfoRow}>
+                        <span style={styles.locationLabel}>📍 Adres:</span>
+                        <span style={styles.locationValue}>{getLocationAddress(day)}</span>
+                      </div>
+                      {/* YENİ: Web sitesi bölümü eklendi */}
+                      {getLocationWebsite(day) && (
+                        <div style={styles.locationInfoRow}>
+                          <span style={styles.locationLabel}>🌐 Web Sitesi:</span>
+                          <a 
+                            href={getLocationWebsite(day)} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={styles.websiteLink}
+                          >
+                            {getLocationWebsite(day).replace(/^https?:\/\//, '')}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {day.activities && day.activities.length > 0 && (
+                    <div style={styles.activitiesSection}>
+                      {/* GÜNCELLENDİ: Emoji ve stil */}
+                      <div style={styles.activitiesTitle}>🎯 Aktiviteler:</div>
+                      <div style={styles.activitiesList}>
+                        {day.activities.slice(0, 3).map((activity, actIndex) => (
+                          <div key={actIndex} style={styles.activityItem}>
+                            • {activity}
+                          </div>
+                        ))}
+                        {day.activities.length > 3 && (
+                          <div style={styles.moreActivities}>
+                            +{day.activities.length - 3} aktivite daha...
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {day.notes && (
+                    <div style={styles.notesSection}>
+                      {/* GÜNCELLENDİ: Emoji ve stil */}
+                      <div style={styles.notesTitle}>📝 Notlar:</div>
+                      <div style={styles.notesContent}>
+                        {day.notes.length > 100 ? `${day.notes.substring(0, 100)}...` : day.notes}
+                      </div>
+                    </div>
+                  )}
+
+                  {day.coordinates && (
+                    <div style={styles.coordinatesSection}>
+                      <button
+                        style={styles.mapButton}
+                        onClick={() => {
+                          const { lat, lng } = day.coordinates;
+                          window.open(`https.www.google.com/maps?q=${lat},${lng}`, '_blank');
+                        }}
+                      >
+                        🗺️ Haritada Göster
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
-            {themeData.daily_plan?.length > 2 && (
-              <div style={styles.moreLocations}>
-                +{themeData.daily_plan.length - 2} lokasyon daha...
-              </div>
-            )}
           </div>
+
+          {!showAllDays && themeData.daily_plan?.length > 3 && (
+            <div style={styles.hiddenDaysInfo}>
+              ... ve {themeData.daily_plan.length - 3} gün daha
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Kart Aksiyonları */}
       <div style={styles.cardActions}>
         <Button 
           variant="secondary" 
           onClick={() => onSelect(themeData)}
           style={isSelected ? styles.selectedButton : {}}
         >
-          {isSelected ? '✓ Seçildi' : 'Seç'}
+          {isSelected ? '✓ Seçildi' : 'Bu Temayı Seç'}
         </Button>
         {isSelected && (
           <Button 
             variant="primary" 
-            onClick={() => onSave(themeData)}
+            onClick={() => handleSaveTheme(themeData)}
             disabled={isSaving}
           >
-            {isSaving ? 'Kaydediliyor...' : 'Bu Temayı Kaydet'}
+            {isSaving ? 'Kaydediliyor...' : 'Planı Kaydet'}
           </Button>
         )}
       </div>
@@ -134,8 +242,8 @@ const TripPlannerForm = ({ onTripCreated }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [tripOptions, setTripOptions] = useState([]); // YENİ: 3 tema seçeneği
-  const [selectedTheme, setSelectedTheme] = useState(null); // YENİ: Seçilen tema
+  const [tripOptions, setTripOptions] = useState([]);
+  const [selectedTheme, setSelectedTheme] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -158,11 +266,9 @@ const TripPlannerForm = ({ onTripCreated }) => {
       
       const response = await generateTripPlan(promptData);
       
-      // YENİ: Backend'den 3 tema seçeneği geldiğini varsayıyoruz
       if (response.data.trip_options && Array.isArray(response.data.trip_options)) {
         setTripOptions(response.data.trip_options);
       } else {
-        // Eski format için fallback (tek plan)
         setTripOptions([{
           theme: "Genel Kamp Rotası",
           description: "Oluşturulan kamp rotası",
@@ -190,7 +296,6 @@ const TripPlannerForm = ({ onTripCreated }) => {
     setError(null);
     
     try {
-      // Options kısmını ignore ederek sadece seçilen temayı kaydet
       const tripWithLocations = {
         trip: themeData.trip,
         locations: themeData.daily_plan || []
@@ -199,7 +304,6 @@ const TripPlannerForm = ({ onTripCreated }) => {
       await saveTrip(tripWithLocations);
       setSuccessMessage('Plan başarıyla kaydedildi!');
       
-      // Form'u reset et
       setTripOptions([]);
       setSelectedTheme(null);
       setFormData({
@@ -218,7 +322,6 @@ const TripPlannerForm = ({ onTripCreated }) => {
 
   return (
     <div style={styles.pageWrapper}>
-      {/* FORM ALANI - ÜST */}
       <div style={styles.formSection}>
         <div style={styles.formCard}>
           <h3 style={styles.title}>AI ile Kamp Rotası Planla</h3>
@@ -269,7 +372,6 @@ const TripPlannerForm = ({ onTripCreated }) => {
         </div>
       </div>
 
-      {/* TEMA KARTLARI ALANI - ALT */}
       {tripOptions.length > 0 && (
         <div style={styles.themesSection}>
           <h3 style={styles.themesTitle}>Size Özel 3 Rota Seçeneği</h3>
@@ -284,7 +386,6 @@ const TripPlannerForm = ({ onTripCreated }) => {
                 themeData={themeData}
                 isSelected={selectedTheme === themeData}
                 onSelect={handleThemeSelect}
-                onSave={handleSaveTheme}
                 isSaving={isSaving}
               />
             ))}
@@ -302,7 +403,6 @@ const styles = {
     backgroundColor: '#f8f9fa',
   },
   
-  // FORM SEKSİYONU STİLLERİ
   formSection: {
     padding: '2rem',
     backgroundColor: '#fff',
@@ -351,7 +451,6 @@ const styles = {
     marginTop: '1rem'
   },
 
-  // TEMA SEKSİYONU STİLLERİ
   themesSection: {
     padding: '3rem 2rem',
     maxWidth: '1400px',
@@ -380,7 +479,6 @@ const styles = {
     flexWrap: 'wrap'
   },
 
-  // TEMA KARTI STİLLERİ
   themeCard: {
     flex: '1',
     minWidth: '350px',
@@ -421,52 +519,6 @@ const styles = {
     borderRadius: '8px',
     marginBottom: '1rem'
   },
-  dailyPlansPreview: {
-    backgroundColor: '#f0f8ff',
-    padding: '1rem',
-    borderRadius: '8px'
-  },
-  dailyPlansTitle: {
-    fontSize: '1rem',
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: '0.75rem'
-  },
-  dailyPlansList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  dayPreview: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    fontSize: '0.85rem',
-    paddingBottom: '0.5rem',
-    borderBottom: '1px solid #e9ecef'
-  },
-  dayNumber: {
-    fontWeight: '600',
-    color: '#5c8d89',
-    minWidth: '50px'
-  },
-  dayLocation: {
-    flex: 1,
-    color: '#2c3e50',
-    textAlign: 'center'
-  },
-  dayDate: {
-    color: '#6c757d',
-    minWidth: '60px',
-    textAlign: 'right'
-  },
-  moreLocations: {
-    color: '#6c757d',
-    fontSize: '0.8rem',
-    fontStyle: 'italic',
-    textAlign: 'center',
-    paddingTop: '0.5rem'
-  },
   cardActions: {
     display: 'flex',
     gap: '0.75rem',
@@ -478,7 +530,6 @@ const styles = {
     borderColor: '#c3e6cb'
   },
 
-  // DETAY ROW STİLLERİ
   detailRow: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -498,7 +549,170 @@ const styles = {
     wordBreak: 'break-word'
   },
 
-  // MESAJ STİLLERİ
+  detailedDailyPlans: {
+    backgroundColor: '#f8fffe',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    border: '1px solid #e8f5f4'
+  },
+  dailyPlansHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1.5rem'
+  },
+  dailyPlansTitle: {
+    fontSize: '1rem',
+    fontWeight: '700', // GÜNCELLENDİ
+    color: '#2c3e50',
+    marginBottom: '0.75rem'
+  },
+  toggleButton: {
+    backgroundColor: '#5c8d89',
+    color: 'white',
+    border: 'none',
+    padding: '0.5rem 1rem',
+    borderRadius: '6px',
+    fontSize: '0.85rem',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease'
+  },
+  daysContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem'
+  },
+  detailedDayCard: {
+    backgroundColor: '#fff',
+    border: '1px solid #e9ecef',
+    borderRadius: '10px',
+    padding: '1.25rem',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+  },
+  dayCardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '1rem',
+    paddingBottom: '0.75rem',
+    borderBottom: '2px solid #f8f9fa'
+  },
+  dayNumberBadge: {
+    backgroundColor: '#5c8d89',
+    color: 'white',
+    padding: '0.4rem 0.8rem',
+    borderRadius: '20px',
+    fontSize: '0.85rem',
+    fontWeight: '700'
+  },
+  dayDateInfo: {
+    color: '#6c757d',
+    fontSize: '0.9rem',
+    fontWeight: '600'
+  },
+  dayLocationSection: {
+    marginBottom: '1rem'
+  },
+  locationInfoGrid: { // YENİ
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem'
+  },
+  locationInfoRow: { // YENİ
+    display: 'flex',
+    alignItems: 'flex-start',
+    fontSize: '0.9rem'
+  },
+  locationLabel: { // GÜNCELLENDİ
+    fontWeight: 'bold',
+    color: '#495057',
+    marginRight: '0.5rem',
+    minWidth: '100px',
+    flexShrink: 0
+  },
+  locationValue: { // YENİ
+    color: '#2c3e50',
+    wordBreak: 'break-word'
+  },
+  websiteLink: { // YENİ
+    color: '#007bff',
+    textDecoration: 'none',
+    wordBreak: 'break-all'
+  },
+  activitiesSection: {
+    marginBottom: '1rem',
+    backgroundColor: '#f0f8ff',
+    padding: '1rem',
+    borderRadius: '8px',
+    border: '1px solid #e6f3ff'
+  },
+  activitiesTitle: {
+    fontSize: '0.95rem',
+    fontWeight: 'bold', // GÜNCELLENDİ
+    color: '#2c3e50',
+    marginBottom: '0.75rem'
+  },
+  activitiesList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.4rem'
+  },
+  activityItem: {
+    fontSize: '0.9rem',
+    color: '#495057',
+    paddingLeft: '0.5rem'
+  },
+  moreActivities: {
+    fontSize: '0.8rem',
+    color: '#6c757d',
+    fontStyle: 'italic',
+    paddingLeft: '0.5rem'
+  },
+  notesSection: {
+    marginBottom: '1rem',
+    backgroundColor: '#fff3cd',
+    padding: '1rem',
+    borderRadius: '8px',
+    border: '1px solid #ffeaa7'
+  },
+  notesTitle: {
+    fontSize: '0.95rem',
+    fontWeight: 'bold', // GÜNCELLENDİ
+    color: '#856404',
+    marginBottom: '0.5rem'
+  },
+  notesContent: {
+    fontSize: '0.9rem',
+    color: '#856404',
+    lineHeight: '1.4',
+    fontStyle: 'italic'
+  },
+  coordinatesSection: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
+  mapButton: {
+    backgroundColor: '#17a2b8',
+    color: 'white',
+    border: 'none',
+    padding: '0.5rem 1rem',
+    borderRadius: '6px',
+    fontSize: '0.85rem',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease'
+  },
+  hiddenDaysInfo: {
+    textAlign: 'center',
+    color: '#6c757d',
+    fontSize: '0.9rem',
+    fontStyle: 'italic',
+    marginTop: '1rem',
+    padding: '0.75rem',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '6px'
+  },
+
   errorMessage: {
     color: '#721c24',
     backgroundColor: '#f8d7da',
